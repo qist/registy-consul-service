@@ -1,0 +1,23 @@
+System:
+  ServiceName: consul-registy-service
+  ListenAddress: 0.0.0.0
+  Port: 9984
+  #通过此IP与端口来检索出口网卡IP地址
+  FindAddress: 10.8.23.95:80
+Logs:
+  LogFilePath: ../logs/conusl.log
+  LogLevel: debug
+Consul:
+  Address: 10.8.23.80:8500,10.8.23.80:8500,10.8.23.80:8500
+  Token:
+  #CheckType 支持tcp http
+  CheckType: http
+  CheckTimeout: 5s
+  CheckInterval: 5s
+  CheckDeregisterCriticalServiceAfter: false
+  CheckDeregisterCriticalServiceAfterTime:
+Service:
+  Tag: node-exporter
+  #Address空则默认通过FindAddress配置来检索出口网卡IP地址
+  Address:
+  Port: 445
