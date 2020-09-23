@@ -1,14 +1,16 @@
 System:
-  ServiceName: consul-registy-service
+  ServiceName: registy-consul-service
   ListenAddress: 0.0.0.0
+  # 多个服务同时注册可以注释掉Port
   Port: 9984
   #通过此IP与端口来检索出口网卡IP地址
-  FindAddress: 10.8.23.95:80
+  FindAddress: 8.8.8.8:80
 Logs:
   LogFilePath: ../logs/conusl.log
-  LogLevel: debug
+  LogLevel: trace
 Consul:
-  Address: 10.8.23.80:8500,10.8.23.80:8500,10.8.23.80:8500
+  # 必须数组 ip 可以一样
+  Address: 1.1.1.1:8500,1.1.1.1:8500,1.1.1.1:8500
   Token:
   #CheckType 支持tcp http
   CheckType: http
