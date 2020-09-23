@@ -22,7 +22,7 @@ type Consul struct {
 	Address                                 string `yaml:"Address"`
     CheckHealth                             string `yaml:"CheckHealth"`
     CheckType                               string `yaml:"CheckType"`
-	CheckTimeout                            string `yaml:"CheckTimeout"`
+    CheckTimeout                            string `yaml:"CheckTimeout"`
 	CheckInterval                           string `yaml:"CheckInterval"`
 	CheckDeregisterCriticalServiceAfter     bool   `yaml:"CheckDeregisterCriticalServiceAfter"`
 	CheckDeregisterCriticalServiceAfterTime string `yaml:"CheckDeregisterCriticalServiceAfterTime"`
