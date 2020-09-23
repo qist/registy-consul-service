@@ -16,8 +16,8 @@ Consul:
   CheckType: http
   CheckTimeout: 5s
   CheckInterval: 5s
-  CheckDeregisterCriticalServiceAfter: false
-  CheckDeregisterCriticalServiceAfterTime:
+  CheckDeregisterCriticalServiceAfter: true
+  CheckDeregisterCriticalServiceAfterTime: 5s
 Service:
   Tag: node-exporter
   #Address空则默认通过FindAddress配置来检索出口网卡IP地址
