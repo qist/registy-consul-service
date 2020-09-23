@@ -3,6 +3,7 @@
 ##### 教程
 
 ```
+配置文件地址参考： https://github.com/qist/registy-consul-service/blob/master/conf/consul.yaml 
 linux 版本下载 
 wget https://github.com/qist/registy-consul-service/releases/download/release/consulR
 windows 版本下载
