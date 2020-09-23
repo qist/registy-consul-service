@@ -25,4 +25,4 @@ Service:
   Tag: node-exporter
   #Address空则默认通过FindAddress配置来检索出口网卡IP地址
   Address:
-  Port: 9913
+  Port: 9100

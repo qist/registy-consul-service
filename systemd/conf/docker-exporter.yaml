@@ -1,0 +1,21 @@
+System:
+  ServiceName: registy-consul-service
+  ListenAddress: 0.0.0.0
+#  Port: 9984
+  FindAddress: 10.8.23.80:80
+Logs:
+  LogFilePath: /apps/consulR/logs/info.log
+  LogLevel: trace
+Consul:
+  Address: 10.8.23.80:8500,10.8.23.80:8500,10.8.23.80:8500
+  Token:
+  CheckHealth: /
+  CheckType: http
+  CheckTimeout: 5s
+  CheckInterval: 5s
+  CheckDeregisterCriticalServiceAfter: false
+  CheckDeregisterCriticalServiceAfterTime: 30s
+Service:
+  Tag: docker-exporter
+  Address:
+  Port: 8080

@@ -1,0 +1,11 @@
+[Unit]
+Description=ConsulR process %i
+[Service]
+LimitNOFILE=65535
+LimitNPROC=65535
+LimitCORE=infinity
+LimitMEMLOCK=infinity
+ExecStart=/apps/consulR/bin/consulR -confpath=/apps/consulR/conf/%i.yaml
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
