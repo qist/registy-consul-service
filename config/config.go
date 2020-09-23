@@ -20,6 +20,7 @@ type Logs struct {
 type Consul struct {
 	Token                                   string `yaml:"Token"`
 	Address                                 string `yaml:"Address"`
+    CheckHealth                             string `yaml:"CheckHealth"`
     CheckType                               string `yaml:"CheckType"`
 	CheckTimeout                            string `yaml:"CheckTimeout"`
 	CheckInterval                           string `yaml:"CheckInterval"`

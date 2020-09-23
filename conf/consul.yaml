@@ -10,16 +10,19 @@ Logs:
   LogLevel: trace
 Consul:
   # 必须数组 ip 可以一样
-  Address: 1.1.1.1:8500,1.1.1.1:8500,1.1.1.1:8500
+  Address: 192.168.2.154:8500,192.168.2.159:8500,192.168.2.156:8500
   Token:
+  # CheckHealth 健康检查路径
+  CheckHealth: /
   #CheckType 支持tcp http
   CheckType: http
   CheckTimeout: 5s
   CheckInterval: 5s
+  # CheckDeregisterCriticalServiceAfter true 业务挂掉删除业务注册
   CheckDeregisterCriticalServiceAfter: true
   CheckDeregisterCriticalServiceAfterTime: 5s
 Service:
   Tag: node-exporter
   #Address空则默认通过FindAddress配置来检索出口网卡IP地址
   Address:
-  Port: 445
+  Port: 9913

@@ -159,7 +159,7 @@ func (CR *Addresses) ConsulRegister(addr string) {
 	// 增加consul健康检查回调函数
 	check := new(consulapi.AgentServiceCheck)
     if conf.GetConf().Consul.CheckType == "http" {
-	    check.HTTP = fmt.Sprintf("http://%s:%d?token=%v", registration.Address, registration.Port, conf.GetConf().Consul.Token)
+	    check.HTTP = fmt.Sprintf("http://%s:%d%s?token=%v", registration.Address, registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
         check.Timeout = conf.GetConf().Consul.CheckTimeout
 	    check.Interval = conf.GetConf().Consul.CheckInterval
     } else if conf.GetConf().Consul.CheckType == "tcp" {
@@ -220,7 +220,7 @@ func (CS *Addresses) CheckSorted(ServiceName string) (string, error) {
 
 func GetSvcCode() bool {
     if conf.GetConf().Consul.CheckType == "http" {
-	   u, _ := url.Parse("http://" + GetAddrs() + ":" + conf.GetConf().Service.Port)
+	   u, _ := url.Parse("http://" + GetAddrs() + ":" + conf.GetConf().Service.Port + conf.GetConf().Consul.CheckHealth)
 	   q := u.Query()
 	   u.RawQuery = q.Encode()
 	   res, err := http.Get(u.String())
