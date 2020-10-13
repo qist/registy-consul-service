@@ -6,6 +6,13 @@ LimitNPROC=65535
 LimitCORE=infinity
 LimitMEMLOCK=infinity
 ExecStart=/apps/consulR/bin/consulR -confpath=/apps/consulR/conf/%i.yaml
+ProtectHome=true
+ProtectSystem=full
+PrivateTmp=true
+TasksMax=infinity
 Restart=on-failure
+StartLimitInterval=30min
+StartLimitBurst=30
+RestartSec=20s
 [Install]
 WantedBy=multi-user.target
