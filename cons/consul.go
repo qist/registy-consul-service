@@ -162,7 +162,11 @@ func (CR *Addresses) ConsulRegister(addr string) {
 	    check.HTTP = fmt.Sprintf("http://%s:%d%s?token=%v", registration.Address, registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
         check.Timeout = conf.GetConf().Consul.CheckTimeout
 	    check.Interval = conf.GetConf().Consul.CheckInterval
-    } else if conf.GetConf().Consul.CheckType == "tcp" {
+    }else if conf.GetConf().Consul.CheckType == "https" {
+	    check.HTTP = fmt.Sprintf("https://%s:%d%s?token=%v", registration.Address, registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
+        check.Timeout = conf.GetConf().Consul.CheckTimeout
+	    check.Interval = conf.GetConf().Consul.CheckInterval
+    }else if conf.GetConf().Consul.CheckType == "tcp" {
         check.TCP = fmt.Sprintf("%s:%d", registration.Address, registration.Port)
         check.Timeout = conf.GetConf().Consul.CheckTimeout
 	    check.Interval = conf.GetConf().Consul.CheckInterval
@@ -221,6 +225,24 @@ func (CS *Addresses) CheckSorted(ServiceName string) (string, error) {
 func GetSvcCode() bool {
     if conf.GetConf().Consul.CheckType == "http" {
 	   u, _ := url.Parse("http://" + GetAddrs() + ":" + conf.GetConf().Service.Port + conf.GetConf().Consul.CheckHealth)
+	   q := u.Query()
+	   u.RawQuery = q.Encode()
+	   res, err := http.Get(u.String())
+	   if err != nil {
+	   	fmt.Println("0")
+	   	return false
+	   }
+	   resCode := res.StatusCode
+	   res.Body.Close()
+	   if err != nil {
+	   	fmt.Println("0")
+	   	return false
+	   }
+	   if resCode == 200 {
+	   	return true
+	   }
+   } else if conf.GetConf().Consul.CheckType == "https" {
+	   u, _ := url.Parse("https://" + GetAddrs() + ":" + conf.GetConf().Service.Port + conf.GetConf().Consul.CheckHealth)
 	   q := u.Query()
 	   u.RawQuery = q.Encode()
 	   res, err := http.Get(u.String())
