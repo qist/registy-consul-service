@@ -5,7 +5,7 @@ import (
 	consul "exec/cons"
 	logs "exec/logs"
 	"github.com/sirupsen/logrus"
-	"net/http"
+	// "net/http"
 	"time"
 )
 
@@ -30,10 +30,19 @@ Check:
 		panic("Error" + err.Error())
 	}
 	//定义一个http接口
-	http.HandleFunc("/", consul.Handler)
-	err = http.ListenAndServe(conf.GetConf().System.ListenAddress+":"+conf.GetConf().System.Port, nil)
-	if err != nil {
-		logrus.WithFields(logrus.Fields{}).Info(err.Error())
-		panic("Error" + err.Error())
+	// http.HandleFunc("/", consul.Handler)
+	// err = http.ListenAndServe(conf.GetConf().System.ListenAddress+":"+conf.GetConf().System.Port, nil)
+	// if err != nil {
+	//	logrus.WithFields(logrus.Fields{}).Info(err.Error())
+	//	panic("Error" + err.Error())
+	// }
+    // 循环检测本地端口
+GoCheck:    
+	if consul.GetSvcCode() {
+		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口启动...")
+		time.Sleep(time.Duration(3600) * time.Second)
+		goto GoCheck
+	} else {
+		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口未启动...")
 	}
 }
