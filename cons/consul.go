@@ -3,6 +3,7 @@ package consul
 import (
 	"encoding/json"
 	conf "exec/config"
+    "crypto/tls"
 	"fmt"
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/sirupsen/logrus"
@@ -155,19 +156,24 @@ func (CR *Addresses) ConsulRegister(addr string) {
 	}
 	registration.Port = port
 	registration.Tags = []string{conf.GetConf().Service.Tag}
+    if conf.GetConf().Service.Address == "" || conf.GetConf().Consul.CheckType == "tcp" {
 	registration.Address = GetAddrs()
+    } else {
+    registration.Address = conf.GetConf().Consul.CheckType  + "://" + GetAddrs()
+    }
 	// 增加consul健康检查回调函数
 	check := new(consulapi.AgentServiceCheck)
     if conf.GetConf().Consul.CheckType == "http" {
-	    check.HTTP = fmt.Sprintf("http://%s:%d%s?token=%v", registration.Address, registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
+	    check.HTTP = fmt.Sprintf("http://%s:%d%s?token=%v", GetAddrs(), registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
         check.Timeout = conf.GetConf().Consul.CheckTimeout
 	    check.Interval = conf.GetConf().Consul.CheckInterval
     }else if conf.GetConf().Consul.CheckType == "https" {
-	    check.HTTP = fmt.Sprintf("https://%s:%d%s?token=%v", registration.Address, registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
+	    check.HTTP = fmt.Sprintf("https://%s:%d%s?token=%v", GetAddrs(), registration.Port, conf.GetConf().Consul.CheckHealth, conf.GetConf().Consul.Token)
         check.Timeout = conf.GetConf().Consul.CheckTimeout
+        check.TLSSkipVerify = true 
 	    check.Interval = conf.GetConf().Consul.CheckInterval
     }else if conf.GetConf().Consul.CheckType == "tcp" {
-        check.TCP = fmt.Sprintf("%s:%d", registration.Address, registration.Port)
+        check.TCP = fmt.Sprintf("%s:%d", GetAddrs(), registration.Port)
         check.Timeout = conf.GetConf().Consul.CheckTimeout
 	    check.Interval = conf.GetConf().Consul.CheckInterval
      }
@@ -245,7 +251,11 @@ func GetSvcCode() bool {
 	   u, _ := url.Parse("https://" + GetAddrs() + ":" + conf.GetConf().Service.Port + conf.GetConf().Consul.CheckHealth)
 	   q := u.Query()
 	   u.RawQuery = q.Encode()
-	   res, err := http.Get(u.String())
+       c := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}}
+	   res, err := c.Get(u.String())
 	   if err != nil {
 	   	fmt.Println("0")
 	   	return false
@@ -256,7 +266,7 @@ func GetSvcCode() bool {
 	   	fmt.Println("0")
 	   	return false
 	   }
-	   if resCode == 200 {
+	   if resCode == 200 || resCode == 401 {
 	   	return true
 	   }
    } else if conf.GetConf().Consul.CheckType == "tcp" {
