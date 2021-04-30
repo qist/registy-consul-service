@@ -1,0 +1,208 @@
+# my global config
+global:
+  scrape_interval: 1m
+  scrape_timeout: 1m
+  evaluation_interval: 10s
+  external_labels:
+    environment: prometheus
+
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets: ['127.0.0.1:9093']
+
+rule_files:
+  - "/apps/prometheus/conf/rules/*.yaml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  #- job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    #static_configs:
+    #- targets: ['localhost:9090']
+
+  - job_name: 'consul-prometheus'
+    scrape_interval: 30s
+    scrape_timeout: 30s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+      # 正则 配置 不使用 consul service
+      regex: "consul|aliyun-exporter|http_2xx|icmp|tcp_connect"
+      action: drop
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex: (.*)
+      target_label: service_name
+      replacement: $1
+      action: replace
+
+  - job_name: 'aliyun-exporter'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+      # 正则 配置 使用 consul service
+      regex: "aliyun-exporter"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+
+  - job_name: 'http_2xx'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+    # 正则 配置 使用 consul service
+      regex: "http_2xx"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+    - source_labels: [__meta_consul_service_address]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.
+
+  - job_name: 'icmp'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Look for a HTTP 200 response.
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+    # 正则 配置 使用 consul service
+      regex: "icmp"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+    - source_labels: [__meta_consul_service_address]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.
+
+  - job_name: 'tcp_connect'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]  # Look for a HTTP 200 response.
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+    # 正则 配置 使用 consul service
+      regex: "tcp_connect"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+    - source_labels: [__meta_consul_service_address,__meta_consul_service_port]
+      separator: ;
+      regex: (.+);(.+)
+      target_label: __param_target
+      replacement: $1:$2
+      action: replace
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.

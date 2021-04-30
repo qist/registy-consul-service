@@ -37,12 +37,14 @@ Check:
 	//	panic("Error" + err.Error())
 	// }
     // 循环检测本地端口
-GoCheck:    
+ GoCheck:    
 	if consul.GetSvcCode() {
-		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口启动...")
-		time.Sleep(time.Duration(3600) * time.Second)
-		goto GoCheck
+       logrus.WithFields(logrus.Fields{}).Info("检测到服务端口启动...")
+	   time.Sleep(time.Duration(60) * time.Second)
+	   goto GoCheck
 	} else {
-		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口未启动...")
+		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口未启动，等待启动...")
+        time.Sleep(time.Duration(60) * time.Second)
+		goto Check   
 	}
 }
