@@ -27,6 +27,7 @@ prometheus.yml prometheus 的服务发现配置 参考
 consul.yaml 注册 本地 Exporter CheckDeregisterCriticalServiceAfter 设置为 false 可以不开启 consulR 进程
 consul.yaml  作为业务注册时 建议 CheckDeregisterCriticalServiceAfter  设置为 true 这样业务故障consul 删除注册 业务恢复正常自动注册到consul 启动文件参考systemd/consulR@.service
 心跳检测时间1分钟检测一次
+二进制consulRV 注册完成退出
 ```
 
 
