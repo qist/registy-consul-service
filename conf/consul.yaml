@@ -2,7 +2,7 @@ System:
   ServiceName: registy-consul-service
   ListenAddress: 0.0.0.0
   # 多个服务同时注册可以注释掉Port
-  Port: 9984
+  #Port: 9984
   #通过此IP与端口来检索出口网卡IP地址
   FindAddress: 8.8.8.8:80
 Logs:

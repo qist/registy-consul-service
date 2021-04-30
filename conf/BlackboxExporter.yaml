@@ -1,0 +1,66 @@
+# tcp 监控注册
+System:
+  ServiceName: registy-consul-service
+  FindAddress: 8.8.8.8:80
+Logs:
+  LogFilePath: /apps/consulR/logs/info.log
+  LogLevel: debug
+Consul:
+  Address: 127.0.0.1:8500,127.0.0.1:8500,127.0.0.1:8500
+  Token:
+  CheckHealth: /-/healthy
+  # CheckType tcp 只支持 tcp 方式监控
+  CheckType: tcp
+  CheckTimeout: 5s
+  CheckInterval: 5s
+  CheckDeregisterCriticalServiceAfter: false
+  CheckDeregisterCriticalServiceAfterTime: 30s
+Service:
+  Tag: tcp_connect
+  Address: "www.qq.com"
+  Port: 443
+  
+# icmp 监控注册
+System:
+  ServiceName: registy-consul-service
+  FindAddress: 8.8.8.8:80
+Logs:
+  LogFilePath: /apps/consulR/logs/info.log
+  LogLevel: debug
+Consul:
+  Address: 127.0.0.1:8500,127.0.0.1:8500,127.0.0.1:8500
+  Token:
+  CheckHealth: /-/healthy
+  # CheckType icmp 只支持 tcp 方式监控
+  CheckType: tcp
+  CheckTimeout: 5s
+  CheckInterval: 5s
+  CheckDeregisterCriticalServiceAfter: false
+  CheckDeregisterCriticalServiceAfterTime: 30s
+Service:
+  Tag: icmp
+  Address: "www.qq.com"
+  Port: 80
+# http,https 监控注册
+
+System:
+  ServiceName: registy-consul-service
+  FindAddress: 8.8.8.8:80
+Logs:
+  LogFilePath: /apps/consulR/logs/info.log
+  LogLevel: debug
+Consul:
+  Address: 127.0.0.1:8500,127.0.0.1:8500,127.0.0.1:8500
+  Token:
+  CheckHealth: /-/healthy
+  #CheckType: http ,https 对应的监控
+  CheckType: http 
+  CheckTimeout: 5s
+  CheckInterval: 5s
+  CheckDeregisterCriticalServiceAfter: false
+  CheckDeregisterCriticalServiceAfterTime: 30s
+Service:
+  Tag: http_2xx
+  Address: "www.qq.com"
+  # 可以是标准80 443 也可以是 其它非标准端口 监控模式根据 CheckType决定 http https 
+  Port: 80 
