@@ -158,8 +158,10 @@ func (CR *Addresses) ConsulRegister(addr string) {
 	registration.Tags = []string{conf.GetConf().Service.Tag}
     if conf.GetConf().Service.Address == "" || conf.GetConf().Consul.CheckType == "tcp" {
 	registration.Address = GetAddrs()
-    } else {
-    registration.Address = conf.GetConf().Consul.CheckType  + "://" + GetAddrs()
+    } else if conf.GetConf().Service.Address != "" && conf.GetConf().Service.Port == "80" || conf.GetConf().Service.Port == "443" {
+    registration.Address = conf.GetConf().Consul.CheckType  + "://" + GetAddrs() + conf.GetConf().Consul.CheckHealth
+    }  else {
+    registration.Address = conf.GetConf().Consul.CheckType  + "://" + GetAddrs() + ":" +  strconv.Itoa(port) + conf.GetConf().Consul.CheckHealth
     }
 	// 增加consul健康检查回调函数
 	check := new(consulapi.AgentServiceCheck)
