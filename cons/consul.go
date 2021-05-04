@@ -147,7 +147,7 @@ func (CR *Addresses) ConsulRegister(addr string) {
 	logrus.WithFields(logrus.Fields{}).Info("建立了新的consul连接...")
 	// 创建注册到consul的服务到
 	registration := new(consulapi.AgentServiceRegistration)
-	registration.ID = conf.GetConf().Service.Tag + "-" + GetAddrs()
+	registration.ID = conf.GetConf().Service.Tag + "-" + GetAddrs() + "-" + conf.GetConf().Service.Port
 	registration.Name = conf.GetConf().Service.Tag
 	var port int
 	port, err = strconv.Atoi(conf.GetConf().Service.Port)
@@ -295,7 +295,7 @@ func (CA *Addresses) CheckAddr(ServiceName string) error {
 	}
 	var i int
 	for _, v := range SvcIDs {
-		if v == conf.GetConf().Service.Tag+"-"+GetAddrs() {
+		if v == conf.GetConf().Service.Tag+"-"+GetAddrs() + "-" + conf.GetConf().Service.Port {
 			i++
 		}
 	}
