@@ -17,7 +17,7 @@ Check:
 		time.Sleep(time.Duration(2) * time.Second)
 		goto Check
 	} else {
-		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口启动,开始注册...")
+		logrus.WithFields(logrus.Fields{}).Info("检测到服务端口已启动,开始注册...")
 	}
 	RegistyStart := new(consul.Addresses)
 	_, err := RegistyStart.CheckSorted(conf.GetConf().Service.Tag)
@@ -39,7 +39,7 @@ Check:
     // 循环检测本地端口
  GoCheck:    
 	if consul.GetSvcCode() {
-       logrus.WithFields(logrus.Fields{}).Info("检测到服务端口启动...")
+       logrus.WithFields(logrus.Fields{}).Info("检测到服务端口已启动...")
 	   time.Sleep(time.Duration(60) * time.Second)
 	   goto GoCheck
 	} else {
